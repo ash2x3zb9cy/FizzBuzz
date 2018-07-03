@@ -10,12 +10,12 @@ function insertFezz(array) {
 
 // map of number to transformation. arguments to functions are array of words (eg ['Fizz, 'Buzz'])
 const allRules = [
-	[3, (x) => x.push('Fizz')],
-	[5, (x) => x.push('Buzz')],
-	[7, (x) => x.push('Bang')],
-	[11, (x) => x.splice(0, x.length, 'Bong')],
-	[13, insertFezz],
-	[17, (x) => x.reverse()],
+	{number: 3, action: (x) => x.push('Fizz')},
+        {number: 5, action: (x) => x.push('Buzz')},
+        {number: 7, action: (x) => x.push('Bang')},
+        {number: 11, action: (x) => x.splice(0, x.length, 'Bong')},
+        {number: 13, action: insertFezz},
+        {number: 17, action: (x) => x.reverse()},
 ];
 
 // builds a set of rules to use from args
@@ -23,7 +23,7 @@ const rules = [];
 let argv = process.argv.slice(2).map(x => parseInt(x, 10));
 for(let i = 0; i < argv.length; i++) {
 	const number = argv[i];
-	let rule = allRules.find(x => x[0] === number);
+	let rule = allRules.find(x => x.number === number);
 	if(rule) rules.push(rule);
 }
 
@@ -32,7 +32,7 @@ function fizzBuzz(number) {
 	const output = [];
 	for(let i = 0; i < rules.length; i++) {
 		let rule = rules[i];
-		if(number % rules[i][0] === 0) rules[i][1](output);
+		if(number % rule.number === 0) rule.action(output);
 	}
 	if(output.length === 0) output.push(number.toString());
 	return output.join('');
